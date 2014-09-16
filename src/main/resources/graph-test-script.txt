@@ -1,0 +1,42 @@
+CREATE 
+
+(leeloo:CHARACTER {name: 'Leeloo Dallas'}),
+(korben:CHARACTER {name: 'Korben Dallas'}),
+
+(earth:ELEMENT {name: 'Earth'}),
+(wind:ELEMENT {name: 'Wind'}),
+(fire:ELEMENT {name: 'Fire'}),
+(water:ELEMENT {name: 'Water'}),
+
+(ruby:FRIEND {name: 'Ruby Rhod'}),
+(vito:FRIEND {name: 'Father Vito'}),
+(david:FRIEND {name: 'David'}),
+
+(taxi:VEHICLE {name: 'Taxi'}),
+
+(earth)-[:HELPS]->(korben),
+(wind)-[:HELPS]->(korben),
+(fire)-[:HELPS]->(korben),
+(water)-[:HELPS]->(korben),
+
+
+(korben)-[:HAS_FRIEND]->(ruby),
+(korben)-[:HAS_FRIEND]->(vito),
+(korben)-[:HAS_FRIEND]->(david),
+(korben)-[:DRIVES]->(taxi),
+
+(korben)-[:LOVES]->(leeloo);
+
+
+================================
+
+MATCH (n)-[rels]-(m)
+WHERE n.name = 'Korben Dallas'
+AND NOT (n)-[:LOVES]->(m)
+RETURN rels;
+
+
+for (rel in rels) {
+  (bob)-[:rel.type]->(rel_other)
+  delete rel
+}
