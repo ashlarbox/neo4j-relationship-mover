@@ -1,37 +1,26 @@
 package org.ashlarbox.neo4j.relationships.move;
 
+import org.ashlarbox.neo4j.relationship.move.RelationshipMover;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 
-import java.util.HashMap;
 import java.util.List;
-
-import static com.google.common.collect.Iterables.partition;
-import static org.ashlarbox.neo4j.constants.OptionConstants.COMMIT_SIZE;
-import static org.ashlarbox.neo4j.relationship.move.RelationshipMover.moveRelationship;
-import static org.ashlarbox.neo4j.relationships.retrieve.RelationshipsRetriever.retrieveRelationships;
-import static org.ashlarbox.neo4j.util.TransactionUtil.commitAndResetTransaction;
-import static org.ashlarbox.neo4j.util.TransactionUtil.startNewTransaction;
 
 public class RelationshipsMover {
 
+    private GraphDatabaseService graphDatabaseService;
+    private RelationshipMover relationshipMover = new RelationshipMover();
 
-    public static void moveRelationships(Node fromNode, Node toNode, HashMap<String, Object> options) {
-
-        int commitSize = (options.containsKey(COMMIT_SIZE)) ? (Integer) options.get(COMMIT_SIZE) : 1000;
-        Transaction tx = startNewTransaction();
+    protected void move(Node fromNode, Node toNode, List<Relationship> relationships) {
+        Transaction tx = graphDatabaseService.beginTx();
 
         try {
-            List<Relationship> allRelationships = retrieveRelationships(fromNode, toNode, options);
-            Iterable<List<Relationship>> partitions = partition(allRelationships, commitSize);
-
-            for (List<Relationship> relationships : partitions) {
-                for (Relationship relationship : relationships) {
-                    moveRelationship(fromNode, toNode, relationship);
-                }
-                tx = commitAndResetTransaction(tx);
+            for (Relationship relationship : relationships) {
+                relationshipMover.move(fromNode, toNode, relationship);
             }
+            tx.success();
 
         } catch (RuntimeException e) {
             tx.failure();
@@ -40,7 +29,13 @@ public class RelationshipsMover {
         } finally {
             tx.close();
         }
-
     }
 
+    public void setGraphDatabaseService(GraphDatabaseService graphDatabaseService) {
+        this.graphDatabaseService = graphDatabaseService;
+    }
+
+    public void setRelationshipMover(RelationshipMover relationshipMover) {
+        this.relationshipMover = relationshipMover;
+    }
 }

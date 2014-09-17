@@ -5,7 +5,13 @@ import org.neo4j.graphdb.Relationship;
 
 public class RelationshipMover {
 
-    public static void moveRelationship(Node fromNode, Node toNode, Relationship oldRelationship) {
+    private RelationshipPropertyCopier relationshipPropertyCopier = new RelationshipPropertyCopier();
+
+    public void move(Node fromNode, Node toNode, Relationship oldRelationship) {
+        move(fromNode, toNode, oldRelationship, null);
+    }
+
+    public void move(Node fromNode, Node toNode, Relationship oldRelationship, String excludeProperty) {
 
         Node newFromNode = oldRelationship.getStartNode().equals(fromNode)
                          ? toNode
@@ -17,12 +23,13 @@ public class RelationshipMover {
 
         Relationship newRelationship = newFromNode.createRelationshipTo(newToNode, oldRelationship.getType());
 
-        for (String key : oldRelationship.getPropertyKeys()) {
-            newRelationship.setProperty(key, oldRelationship.getProperty(key));
-        }
+        relationshipPropertyCopier.copy(oldRelationship, newRelationship, excludeProperty);
 
 
         oldRelationship.delete();
     }
 
+    public void setRelationshipPropertyCopier(RelationshipPropertyCopier relationshipPropertyCopier) {
+        this.relationshipPropertyCopier = relationshipPropertyCopier;
+    }
 }
