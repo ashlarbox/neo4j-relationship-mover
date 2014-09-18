@@ -7,7 +7,7 @@ import java.util.HashMap;
 import static org.ashlarbox.neo4j.constants.OptionConstants.ADD_PROPERTY_KEY;
 import static org.ashlarbox.neo4j.constants.OptionConstants.ADD_PROPERTY_VALUE;
 
-public class RelationshipPropertyAdder {
+class RelationshipPropertyAdder {
 
     void add(Relationship newRelationship, HashMap<String, Object> options) {
         if (options.containsKey(ADD_PROPERTY_KEY) && options.containsKey(ADD_PROPERTY_VALUE)) {

@@ -47,7 +47,7 @@ public class RelationshipsMover_UT {
     private List<Relationship> relationships;
 
     @Rule
-    public ExpectedException expectedException = none();
+    public final ExpectedException expectedException = none();
 
     @Before
     public void setup() {
