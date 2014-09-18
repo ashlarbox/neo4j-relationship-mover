@@ -6,19 +6,20 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 
+import java.util.HashMap;
 import java.util.List;
 
-public class RelationshipsMover {
+class RelationshipsMover {
 
     private GraphDatabaseService graphDatabaseService;
     private RelationshipMover relationshipMover = new RelationshipMover();
 
-    protected void move(Node fromNode, Node toNode, List<Relationship> relationships) {
+    void move(Node fromNode, Node toNode, List<Relationship> relationships, HashMap<String, Object> options) {
         Transaction tx = graphDatabaseService.beginTx();
 
         try {
             for (Relationship relationship : relationships) {
-                relationshipMover.move(fromNode, toNode, relationship);
+                relationshipMover.move(fromNode, toNode, relationship, options);
             }
             tx.success();
 

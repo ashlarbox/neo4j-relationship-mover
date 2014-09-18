@@ -31,7 +31,6 @@ public class RelationshipPropertyCopier_UT {
         for (int i = 0; i <= propertiesToAdd; i++) {
             String key = randomAlphabetic(8);
             String value = randomAlphanumeric(10);
-            System.out.println("Property: " + i + "   Key: " + key + "   Value: " + value);
             propertyMap.put(key, value);
             when(oldRelationship.getProperty(key)).thenReturn(value);
         }

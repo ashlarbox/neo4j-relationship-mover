@@ -3,15 +3,15 @@ package org.ashlarbox.neo4j.relationship.move;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 
+import java.util.HashMap;
+
+import static org.ashlarbox.neo4j.constants.OptionConstants.EXCLUDE_NEW_PROPERTY;
+
 public class RelationshipMover {
 
     private RelationshipPropertyCopier relationshipPropertyCopier = new RelationshipPropertyCopier();
 
-    public void move(Node fromNode, Node toNode, Relationship oldRelationship) {
-        move(fromNode, toNode, oldRelationship, null);
-    }
-
-    public void move(Node fromNode, Node toNode, Relationship oldRelationship, String excludeProperty) {
+    public void move(Node fromNode, Node toNode, Relationship oldRelationship, HashMap<String, Object> options) {
 
         Node newFromNode = oldRelationship.getStartNode().equals(fromNode)
                          ? toNode
@@ -23,7 +23,7 @@ public class RelationshipMover {
 
         Relationship newRelationship = newFromNode.createRelationshipTo(newToNode, oldRelationship.getType());
 
-        relationshipPropertyCopier.copy(oldRelationship, newRelationship, excludeProperty);
+        relationshipPropertyCopier.copy(oldRelationship, newRelationship, (String) options.get(EXCLUDE_NEW_PROPERTY));
 
 
         oldRelationship.delete();
