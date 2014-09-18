@@ -4,6 +4,7 @@ import org.ashlarbox.neo4j.relationships.retrieve.RelationshipsRetriever;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.neo4j.graphdb.Node;
@@ -25,9 +26,13 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MoveRelationships_UT {
 
-    @Mock private RelationshipsMover relationshipsMover;
-    @Mock private RelationshipsRetriever relationshipsRetriever;
+    @Mock
+    private RelationshipsMover relationshipsMover;
 
+    @Mock
+    private RelationshipsRetriever relationshipsRetriever;
+
+    @InjectMocks
     private final MoveRelationships moveRelationships = new MoveRelationships();
 
     @Mock private Node fromNode;
@@ -38,9 +43,6 @@ public class MoveRelationships_UT {
 
     @Before
     public void setup() {
-        moveRelationships.setRelationshipsMover(relationshipsMover);
-        moveRelationships.setRelationshipsRetriever(relationshipsRetriever);
-
         relationships = newArrayList();
         for (int i = 0; i < DEFAULT_COMMIT_SIZE; i++) {
             relationships.add(mock(Relationship.class));

@@ -6,6 +6,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -29,9 +30,13 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RelationshipsMover_UT {
 
-    @Mock private GraphDatabaseService graphDatabaseService;
-    @Mock private RelationshipMover relationshipMover;
+    @Mock
+    private GraphDatabaseService graphDatabaseService;
 
+    @Mock
+    private RelationshipMover relationshipMover;
+
+    @InjectMocks
     private final RelationshipsMover relationshipsMover = new RelationshipsMover();
 
     @Mock private Node fromNode;
@@ -46,9 +51,6 @@ public class RelationshipsMover_UT {
 
     @Before
     public void setup() {
-        relationshipsMover.setGraphDatabaseService(graphDatabaseService);
-        relationshipsMover.setRelationshipMover(relationshipMover);
-
         relationships = newArrayList();
         int numOfRelationships = nextInt(1, 5);
         for (int i=0; i<numOfRelationships; i++) {

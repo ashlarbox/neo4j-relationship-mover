@@ -4,7 +4,7 @@ import com.google.common.base.Predicate;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 
-import static org.ashlarbox.neo4j.util.RelationshipUtil.hasNode;
+import static org.ashlarbox.neo4j.relationship.util.RelationshipUtil.hasNode;
 
 public class NotWithNodePredicate {
 

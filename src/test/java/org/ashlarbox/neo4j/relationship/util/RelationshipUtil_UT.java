@@ -1,4 +1,4 @@
-package org.ashlarbox.neo4j.util;
+package org.ashlarbox.neo4j.relationship.util;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,7 +8,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 
-import static org.ashlarbox.neo4j.util.RelationshipUtil.hasNode;
+import static org.ashlarbox.neo4j.relationship.util.RelationshipUtil.hasNode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;

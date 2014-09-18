@@ -28,12 +28,4 @@ public class MoveRelationships {
 
     }
 
-
-    public void setRelationshipsMover(RelationshipsMover relationshipsMover) {
-        this.relationshipsMover = relationshipsMover;
-    }
-
-    public void setRelationshipsRetriever(RelationshipsRetriever relationshipsRetriever) {
-        this.relationshipsRetriever = relationshipsRetriever;
-    }
 }

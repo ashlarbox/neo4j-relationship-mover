@@ -32,11 +32,4 @@ class RelationshipsMover {
         }
     }
 
-    public void setGraphDatabaseService(GraphDatabaseService graphDatabaseService) {
-        this.graphDatabaseService = graphDatabaseService;
-    }
-
-    public void setRelationshipMover(RelationshipMover relationshipMover) {
-        this.relationshipMover = relationshipMover;
-    }
 }
