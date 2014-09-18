@@ -6,12 +6,14 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.neo4j.graphdb.Relationship;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
+import static org.ashlarbox.neo4j.constants.OptionConstants.EXCLUDE_NEW_PROPERTY;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -19,10 +21,11 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RelationshipPropertyCopier_UT {
 
+    private final RelationshipPropertyCopier relationshipPropertyCopier = new RelationshipPropertyCopier();
+
     @Mock private Relationship oldRelationship;
     @Mock private Relationship newRelationship;
-
-    private final RelationshipPropertyCopier relationshipPropertyCopier = new RelationshipPropertyCopier();
+    @Mock private HashMap<String,Object> options;
 
     @Test
     public void moverShouldCopyPropertiesToNewRelationship() {
@@ -36,8 +39,9 @@ public class RelationshipPropertyCopier_UT {
         }
 
         when(oldRelationship.getPropertyKeys()).thenReturn(propertyMap.keySet());
+        when(options.get(EXCLUDE_NEW_PROPERTY)).thenReturn(null);
 
-        relationshipPropertyCopier.copy(oldRelationship, newRelationship, null);
+        relationshipPropertyCopier.copy(oldRelationship, newRelationship, options);
 
         for (Map.Entry<String, String> entry : propertyMap.entrySet()) {
             verify(newRelationship).setProperty(entry.getKey(), entry.getValue());
@@ -52,8 +56,9 @@ public class RelationshipPropertyCopier_UT {
         propertyMap.put(excludeKey, value);
 
         when(oldRelationship.getPropertyKeys()).thenReturn(propertyMap.keySet());
+        when(options.get(EXCLUDE_NEW_PROPERTY)).thenReturn(excludeKey);
 
-        relationshipPropertyCopier.copy(oldRelationship, newRelationship, excludeKey);
+        relationshipPropertyCopier.copy(oldRelationship, newRelationship, options);
 
         verifyZeroInteractions(newRelationship);
     }

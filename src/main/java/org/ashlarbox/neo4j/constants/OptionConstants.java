@@ -2,6 +2,8 @@ package org.ashlarbox.neo4j.constants;
 
 public class OptionConstants {
 
+    public static final String ADD_PROPERTY_KEY = "add_property_key";
+    public static final String ADD_PROPERTY_VALUE = "add_property_value";
     public static final String COMMIT_SIZE = "commit_size";
     public static final String DIRECTION = "direction";
     public static final String EXCLUDE_NEW_PROPERTY = "exclude_new_property";

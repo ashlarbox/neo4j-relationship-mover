@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.neo4j.graphdb.Direction;
@@ -16,39 +17,35 @@ import org.neo4j.test.TestGraphDatabaseFactory;
 
 import java.util.HashMap;
 
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
-import static org.ashlarbox.neo4j.constants.OptionConstants.EXCLUDE_NEW_PROPERTY;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.neo4j.graphdb.DynamicLabel.label;
 import static org.neo4j.graphdb.DynamicRelationshipType.withName;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RelationshipMover_UT {
 
+    @Mock
+    private RelationshipPropertyAdder relationshipPropertyAdder;
+
+    @Mock
+    private RelationshipPropertyCopier relationshipPropertyCopier;
+
+    @InjectMocks
+    private final RelationshipMover relationshipMover = new RelationshipMover();
+
     private GraphDatabaseService graphDb;
 
     private static final RelationshipType TEST = withName("TEST");
-    private static final String EXCLUDE = randomAlphabetic(8);
 
     private Node fromNode;
     private Node toNode;
     private Node otherNode;
     private Relationship oldRelationship;
 
-    private final RelationshipMover relationshipMover = new RelationshipMover();
-
-    @Mock private RelationshipPropertyCopier relationshipPropertyCopier;
     @Mock private HashMap<String, Object> options;
-
-    @Before
-    public void handleMocks() {
-        relationshipMover.setRelationshipPropertyCopier(relationshipPropertyCopier);
-        when(options.get(EXCLUDE_NEW_PROPERTY)).thenReturn(EXCLUDE);
-    }
 
     @Before
     public void prepareTestDatabase()
@@ -77,11 +74,9 @@ public class RelationshipMover_UT {
         tx.success();
 
         Relationship newRelationship = toNode.getSingleRelationship(TEST, Direction.OUTGOING);
+
         assertThat(newRelationship.getOtherNode(toNode), is(otherNode));
-
         assertThat(fromNode.getSingleRelationship(TEST, Direction.OUTGOING), is(nullValue()));
-
-        verify(relationshipPropertyCopier).copy(oldRelationship, newRelationship, EXCLUDE);
     }
 
     @Test
@@ -92,10 +87,25 @@ public class RelationshipMover_UT {
         relationshipMover.move(fromNode, toNode, oldRelationship, options);
         tx.success();
 
-        Relationship relationship = toNode.getSingleRelationship(TEST, Direction.INCOMING);
-        assertThat(relationship.getOtherNode(toNode), is(otherNode));
+        Relationship newRelationship = toNode.getSingleRelationship(TEST, Direction.INCOMING);
 
+        assertThat(newRelationship.getOtherNode(toNode), is(otherNode));
         assertThat(fromNode.getSingleRelationship(TEST, Direction.INCOMING), is(nullValue()));
     }
+
+    @Test
+    public void moverShouldRunPropertyFunctions() {
+        oldRelationship = fromNode.createRelationshipTo(otherNode, TEST);
+
+        Transaction tx = graphDb.beginTx();
+        relationshipMover.move(fromNode, toNode, oldRelationship, options);
+        tx.success();
+
+        Relationship newRelationship = toNode.getSingleRelationship(TEST, Direction.OUTGOING);
+
+        verify(relationshipPropertyCopier).copy(oldRelationship, newRelationship, options);
+        verify(relationshipPropertyAdder).add(newRelationship, options);
+    }
+
 
 }
