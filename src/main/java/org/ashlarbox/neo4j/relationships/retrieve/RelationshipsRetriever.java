@@ -26,9 +26,7 @@ public class RelationshipsRetriever {
 
         Direction direction = options.containsKey(DIRECTION) ? (Direction) options.get(DIRECTION) : BOTH;
 
-        Iterable<Relationship> relationships = sourceNode.getRelationships(direction);
-
-        FluentIterable<Relationship> iterable = from(relationships).filter(notWithNode(excludeNode));
+        FluentIterable<Relationship> iterable = from(sourceNode.getRelationships(direction));
 
         if (options.containsKey(HAS_PROPERTY)) {
             iterable = iterable.filter(hasProperty((String) options.get(HAS_PROPERTY)));
@@ -37,6 +35,8 @@ public class RelationshipsRetriever {
         if (options.containsKey(WITH_LABEL)) {
             iterable = iterable.filter(linkedWithLabel(sourceNode, (Label) options.get(WITH_LABEL)));
         }
+
+        iterable = iterable.filter(notWithNode(excludeNode));
 
         iterable = applyLimit(iterable, (Integer) options.get(MOVE_LIMIT));
 
