@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveExcludeNodeRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveForDirectionRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveHasPropertyRule;
-import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveLimitRule;
+import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveLimitSizeRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveWithLabelRule;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class RelationshipsRetriever_UT {
     private RetrieveHasPropertyRule retrieveHasPropertyRule;
 
     @Mock
-    private RetrieveLimitRule retrieveLimitRule;
+    private RetrieveLimitSizeRule retrieveLimitSizeRule;
 
     @Mock
     private RetrieveWithLabelRule retrieveWithLabelRule;
@@ -62,7 +62,7 @@ public class RelationshipsRetriever_UT {
         when(retrieveHasPropertyRule.apply(relationships, options)).thenReturn(relationships);
         when(retrieveWithLabelRule.apply(relationships, sourceNode, options)).thenReturn(relationships);
         when(retrieveExcludeNodeRule.apply(relationships, excludeNode)).thenReturn(relationships);
-        when(retrieveLimitRule.apply(relationships, options)).thenReturn(relationships);
+        when(retrieveLimitSizeRule.apply(relationships, options)).thenReturn(relationships);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class RelationshipsRetriever_UT {
                                   retrieveHasPropertyRule,
                                   retrieveWithLabelRule,
                                   retrieveExcludeNodeRule,
-                                  retrieveLimitRule);
+                retrieveLimitSizeRule);
 
         relationshipsRetriever.retrieve(sourceNode, excludeNode, options);
 
@@ -79,7 +79,7 @@ public class RelationshipsRetriever_UT {
         inOrder.verify(retrieveHasPropertyRule).apply(relationships, options);
         inOrder.verify(retrieveWithLabelRule).apply(relationships, sourceNode, options);
         inOrder.verify(retrieveExcludeNodeRule).apply(relationships, excludeNode);
-        inOrder.verify(retrieveLimitRule).apply(relationships, options);
+        inOrder.verify(retrieveLimitSizeRule).apply(relationships, options);
     }
 
     @Test

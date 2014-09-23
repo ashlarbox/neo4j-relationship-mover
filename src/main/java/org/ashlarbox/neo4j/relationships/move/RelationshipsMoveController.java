@@ -11,7 +11,7 @@ import static com.google.common.collect.Iterables.partition;
 import static org.ashlarbox.neo4j.constants.DefaultConstants.DEFAULT_COMMIT_SIZE;
 import static org.ashlarbox.neo4j.constants.OptionConstants.COMMIT_SIZE;
 
-public class MoveRelationships {
+public class RelationshipsMoveController {
 
     private RelationshipsMover relationshipsMover = new RelationshipsMover();
     private RelationshipsRetriever relationshipsRetriever = new RelationshipsRetriever();

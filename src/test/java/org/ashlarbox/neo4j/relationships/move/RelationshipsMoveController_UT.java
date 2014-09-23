@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MoveRelationships_UT {
+public class RelationshipsMoveController_UT {
 
     @Mock
     private RelationshipsMover relationshipsMover;
@@ -33,7 +33,7 @@ public class MoveRelationships_UT {
     private RelationshipsRetriever relationshipsRetriever;
 
     @InjectMocks
-    private final MoveRelationships moveRelationships = new MoveRelationships();
+    private final RelationshipsMoveController relationshipsMoveController = new RelationshipsMoveController();
 
     @Mock private Node fromNode;
     @Mock private Node toNode;
@@ -55,7 +55,7 @@ public class MoveRelationships_UT {
     public void lessEqualRelationshipsToCommitSizeShouldCallRelationshipMoverOnce() {
         when(options.containsKey(COMMIT_SIZE)).thenReturn(false);
 
-        moveRelationships.move(fromNode, toNode, options);
+        relationshipsMoveController.move(fromNode, toNode, options);
 
         verify(relationshipsMover).move(fromNode, toNode, relationships, options);
         verifyNoMoreInteractions(relationshipsMover);
@@ -68,7 +68,7 @@ public class MoveRelationships_UT {
         when(options.containsKey(COMMIT_SIZE)).thenReturn(true);
         when(options.get(COMMIT_SIZE)).thenReturn(commitSize);
 
-        moveRelationships.move(fromNode, toNode, options);
+        relationshipsMoveController.move(fromNode, toNode, options);
 
         Iterable<List<Relationship>> partitions = partition(relationships, commitSize);
         for (List<Relationship> partition : partitions) {
