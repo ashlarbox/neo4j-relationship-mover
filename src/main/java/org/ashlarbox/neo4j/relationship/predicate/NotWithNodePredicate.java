@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public class NotWithNodePredicate {
 
+    private NotWithNodePredicate() {}
+
     public static Predicate<Relationship> notWithNode(final Node sourceNode, final ArrayList<Node> excludeNodes) {
         return new Predicate<Relationship>() {
 

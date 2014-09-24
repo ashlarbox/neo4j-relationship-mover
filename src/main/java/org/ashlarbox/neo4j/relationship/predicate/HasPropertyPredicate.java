@@ -5,6 +5,8 @@ import org.neo4j.graphdb.Relationship;
 
 public class HasPropertyPredicate {
 
+    private HasPropertyPredicate() {}
+
     public static Predicate<Relationship> hasProperty(final String key, final Object value) {
         return new Predicate<Relationship>() {
 

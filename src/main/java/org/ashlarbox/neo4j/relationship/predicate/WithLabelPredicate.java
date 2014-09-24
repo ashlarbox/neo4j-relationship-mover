@@ -7,6 +7,8 @@ import org.neo4j.graphdb.Relationship;
 
 public class WithLabelPredicate {
 
+    private WithLabelPredicate() {}
+
     public static Predicate<Relationship> linkedWithLabel(final Node sourceNode, final Label label) {
         return new Predicate<Relationship>() {
 
