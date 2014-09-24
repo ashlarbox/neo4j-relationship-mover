@@ -20,9 +20,9 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RetrieveLimitSizeRule_UT {
+public class RelationshipsLimitSizeRule_UT {
 
-    private final RetrieveLimitSizeRule retrieveLimitSizeRule = new RetrieveLimitSizeRule();
+    private final RelationshipsLimitSizeRule relationshipsLimitSizeRule = new RelationshipsLimitSizeRule();
 
     private static final int MAX_SIZE = 25;
     private static final int LIMIT_SIZE = nextInt(1, MAX_SIZE - 5);
@@ -45,7 +45,7 @@ public class RetrieveLimitSizeRule_UT {
 
     @Test
     public void missingLimitOptionShouldNotApplyFilter() {
-        List<Relationship> returnedRelationships = retrieveLimitSizeRule.apply(from(relationships), options).toList();
+        List<Relationship> returnedRelationships = relationshipsLimitSizeRule.apply(from(relationships), options).toList();
         assertThat(returnedRelationships.size(), is(relationships.size()));
         assertThat(returnedRelationships.containsAll(relationships), is(true));
     }
@@ -53,7 +53,7 @@ public class RetrieveLimitSizeRule_UT {
     @Test
     public void limitOptionShouldApplyFilter() {
         options.put(MOVE_LIMIT, LIMIT_SIZE);
-        List<Relationship> returnedRelationships = retrieveLimitSizeRule.apply(from(relationships), options).toList();
+        List<Relationship> returnedRelationships = relationshipsLimitSizeRule.apply(from(relationships), options).toList();
         assertThat(returnedRelationships.size(), is(LIMIT_SIZE));
         for (Relationship relationship : returnedRelationships) {
             assertThat(relationships, hasItem(relationship));

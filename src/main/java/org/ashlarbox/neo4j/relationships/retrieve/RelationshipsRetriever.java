@@ -1,10 +1,10 @@
 package org.ashlarbox.neo4j.relationships.retrieve;
 
 import com.google.common.collect.FluentIterable;
+import org.ashlarbox.neo4j.relationships.retrieve.rule.RelationshipsHasPropertyValueRule;
+import org.ashlarbox.neo4j.relationships.retrieve.rule.RelationshipsLimitSizeRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveExcludeNodeRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveForDirectionRule;
-import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveHasPropertyRule;
-import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveLimitSizeRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveWithLabelRule;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -16,16 +16,16 @@ public class RelationshipsRetriever {
 
     private RetrieveExcludeNodeRule retrieveExcludeNodeRule = new RetrieveExcludeNodeRule();
     private RetrieveForDirectionRule retrieveForDirectionRule = new RetrieveForDirectionRule();
-    private RetrieveHasPropertyRule retrieveHasPropertyRule = new RetrieveHasPropertyRule();
-    private RetrieveLimitSizeRule retrieveLimitSizeRule = new RetrieveLimitSizeRule();
+    private RelationshipsHasPropertyValueRule relationshipsHasPropertyValueRule = new RelationshipsHasPropertyValueRule();
+    private RelationshipsLimitSizeRule relationshipsLimitSizeRule = new RelationshipsLimitSizeRule();
     private RetrieveWithLabelRule retrieveWithLabelRule = new RetrieveWithLabelRule();
 
     public List<Relationship> retrieve(Node sourceNode, Node excludeNode, HashMap<String, Object> options) {
         FluentIterable<Relationship> relationships = retrieveForDirectionRule.apply(sourceNode, options);
-        relationships = retrieveHasPropertyRule.apply(relationships, options);
+        relationships = relationshipsHasPropertyValueRule.apply(relationships, options);
         relationships = retrieveWithLabelRule.apply(relationships, sourceNode, options);
         relationships = retrieveExcludeNodeRule.apply(relationships, excludeNode);
-        relationships = retrieveLimitSizeRule.apply(relationships, options);
+        relationships = relationshipsLimitSizeRule.apply(relationships, options);
         return relationships.toList();
     }
 

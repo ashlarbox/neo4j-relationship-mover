@@ -2,10 +2,10 @@ package org.ashlarbox.neo4j.relationships.retrieve;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import org.ashlarbox.neo4j.relationships.retrieve.rule.RelationshipsHasPropertyValueRule;
+import org.ashlarbox.neo4j.relationships.retrieve.rule.RelationshipsLimitSizeRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveExcludeNodeRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveForDirectionRule;
-import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveHasPropertyRule;
-import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveLimitSizeRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveWithLabelRule;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,10 +38,10 @@ public class RelationshipsRetriever_UT {
     private RetrieveForDirectionRule retrieveForDirectionRule;
 
     @Mock
-    private RetrieveHasPropertyRule retrieveHasPropertyRule;
+    private RelationshipsHasPropertyValueRule relationshipsHasPropertyValueRule;
 
     @Mock
-    private RetrieveLimitSizeRule retrieveLimitSizeRule;
+    private RelationshipsLimitSizeRule relationshipsLimitSizeRule;
 
     @Mock
     private RetrieveWithLabelRule retrieveWithLabelRule;
@@ -59,27 +59,27 @@ public class RelationshipsRetriever_UT {
     @Before
     public void mockActions() {
         when(retrieveForDirectionRule.apply(sourceNode, options)).thenReturn(relationships);
-        when(retrieveHasPropertyRule.apply(relationships, options)).thenReturn(relationships);
+        when(relationshipsHasPropertyValueRule.apply(relationships, options)).thenReturn(relationships);
         when(retrieveWithLabelRule.apply(relationships, sourceNode, options)).thenReturn(relationships);
         when(retrieveExcludeNodeRule.apply(relationships, excludeNode)).thenReturn(relationships);
-        when(retrieveLimitSizeRule.apply(relationships, options)).thenReturn(relationships);
+        when(relationshipsLimitSizeRule.apply(relationships, options)).thenReturn(relationships);
     }
 
     @Test
     public void retrieveRunsRulesInOrder() {
         InOrder inOrder = inOrder(retrieveForDirectionRule,
-                                  retrieveHasPropertyRule,
+                relationshipsHasPropertyValueRule,
                                   retrieveWithLabelRule,
                                   retrieveExcludeNodeRule,
-                retrieveLimitSizeRule);
+                relationshipsLimitSizeRule);
 
         relationshipsRetriever.retrieve(sourceNode, excludeNode, options);
 
         inOrder.verify(retrieveForDirectionRule).apply(sourceNode, options);
-        inOrder.verify(retrieveHasPropertyRule).apply(relationships, options);
+        inOrder.verify(relationshipsHasPropertyValueRule).apply(relationships, options);
         inOrder.verify(retrieveWithLabelRule).apply(relationships, sourceNode, options);
         inOrder.verify(retrieveExcludeNodeRule).apply(relationships, excludeNode);
-        inOrder.verify(retrieveLimitSizeRule).apply(relationships, options);
+        inOrder.verify(relationshipsLimitSizeRule).apply(relationships, options);
     }
 
     @Test

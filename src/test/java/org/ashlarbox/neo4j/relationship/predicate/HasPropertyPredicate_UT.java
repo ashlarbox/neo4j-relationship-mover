@@ -18,13 +18,23 @@ public class HasPropertyPredicate_UT {
 
     @Mock private Relationship relationship;
     private final String key = randomAlphabetic(8);
-    private final Predicate<Relationship> predicate = hasProperty(key);
+    private final String value = randomAlphabetic(8);
+    private final Predicate<Relationship> predicate = hasProperty(key, value);
 
     @Test
-    public void predicateShouldReturnTrueWhenRelationshipHasKey() {
+    public void predicateShouldReturnTrueWhenRelationshipPropertyDoesHasValue() {
         when(relationship.hasProperty(key)).thenReturn(true);
+        when(relationship.getProperty(key)).thenReturn(value);
         assertThat(predicate.apply(relationship), is(true));
     }
+
+    @Test
+    public void predicateShouldReturnFalseWhenRelationshipPropertyDoesNotHaveValue() {
+        when(relationship.hasProperty(key)).thenReturn(true);
+        when(relationship.getProperty(key)).thenReturn(value + "1");
+        assertThat(predicate.apply(relationship), is(false));
+    }
+
 
     @Test
     public void predicateShouldReturnFalseWhenRelationshipDoesNotHaveKey() {
