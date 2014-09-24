@@ -12,11 +12,11 @@ import static org.ashlarbox.neo4j.constants.OptionConstants.DIRECTION;
 import static org.ashlarbox.neo4j.option.ValidateAndRetrieveOption.validateAndRetrieve;
 import static org.neo4j.graphdb.Direction.BOTH;
 
-public class RetrieveForDirectionRule {
+public class RelationshipsForDirectionRule {
 
     public FluentIterable<Relationship> apply(Node sourceNode, HashMap<String, Object> options) {
         Direction direction = (Direction) validateAndRetrieve(options, DIRECTION, Direction.class);
-        return from(sourceNode.getRelationships(options.containsKey(DIRECTION) ? direction : BOTH));
+        return from(sourceNode.getRelationships(direction != null ? direction : BOTH));
     }
 
 }
