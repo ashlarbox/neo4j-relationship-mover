@@ -1,16 +1,17 @@
 package org.ashlarbox.neo4j.relationships.move;
 
-import com.google.common.collect.Maps;
 import org.junit.Before;
 import org.junit.Test;
-import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
+import java.util.HashMap;
+
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -22,12 +23,12 @@ import static org.neo4j.graphdb.DynamicRelationshipType.withName;
 
 public class MoveAllRelationships_MT {
 
-    private static final DynamicRelationshipType HAS_FRIEND = withName("HAS_FRIEND");
-    private static final DynamicRelationshipType DRIVES = withName("DRIVES");
-    private static final DynamicRelationshipType HELPS = withName("HELPS");
-    private static final DynamicRelationshipType AFFECTS = withName("AFFECTS");
-    private static final DynamicRelationshipType LOVES = withName("LOVES");
-    private final RelationshipsMoveController controller = new RelationshipsMoveController();
+    private static final RelationshipType HAS_FRIEND = withName("HAS_FRIEND");
+    private static final RelationshipType DRIVES = withName("DRIVES");
+    private static final RelationshipType HELPS = withName("HELPS");
+    private static final RelationshipType AFFECTS = withName("AFFECTS");
+    private static final RelationshipType LOVES = withName("LOVES");
+    private final RelationshipsMoveController relationshipsMoveController = new RelationshipsMoveController();
 
     private GraphDatabaseService graphDb;
 
@@ -42,7 +43,7 @@ public class MoveAllRelationships_MT {
     public void prepareTestDatabase()
     {
         graphDb = new TestGraphDatabaseFactory().newImpermanentDatabase();
-        controller.setGraphDatabaseService(graphDb);
+        relationshipsMoveController.setGraphDatabaseService(graphDb);
 
         korben = createNode("Korben Dallas", "Character");
         leeloo = createNode("Leeloo Dallas", "Character");
@@ -60,7 +61,9 @@ public class MoveAllRelationships_MT {
 
     @Test
     public void controllerShouldMoveRelationships() {
-        controller.move(korben, leeloo, Maps.<String, Object>newHashMap());
+        HashMap<String, Object> options = newHashMap();
+
+        relationshipsMoveController.move(korben, leeloo, options);
 
         Transaction tx = graphDb.beginTx();
 
