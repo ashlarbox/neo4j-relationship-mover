@@ -4,9 +4,9 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RelationshipsHasPropertyValueRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RelationshipsLimitSizeRule;
+import org.ashlarbox.neo4j.relationships.retrieve.rule.RelationshipsWithLabelRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveExcludeNodeRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveForDirectionRule;
-import org.ashlarbox.neo4j.relationships.retrieve.rule.RetrieveWithLabelRule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +44,7 @@ public class RelationshipsRetriever_UT {
     private RelationshipsLimitSizeRule relationshipsLimitSizeRule;
 
     @Mock
-    private RetrieveWithLabelRule retrieveWithLabelRule;
+    private RelationshipsWithLabelRule relationshipsWithLabelRule;
 
     @InjectMocks
     private final RelationshipsRetriever relationshipsRetriever = new RelationshipsRetriever();
@@ -60,7 +60,7 @@ public class RelationshipsRetriever_UT {
     public void mockActions() {
         when(retrieveForDirectionRule.apply(sourceNode, options)).thenReturn(relationships);
         when(relationshipsHasPropertyValueRule.apply(relationships, options)).thenReturn(relationships);
-        when(retrieveWithLabelRule.apply(relationships, sourceNode, options)).thenReturn(relationships);
+        when(relationshipsWithLabelRule.apply(relationships, sourceNode, options)).thenReturn(relationships);
         when(retrieveExcludeNodeRule.apply(relationships, excludeNode)).thenReturn(relationships);
         when(relationshipsLimitSizeRule.apply(relationships, options)).thenReturn(relationships);
     }
@@ -69,7 +69,7 @@ public class RelationshipsRetriever_UT {
     public void retrieveRunsRulesInOrder() {
         InOrder inOrder = inOrder(retrieveForDirectionRule,
                 relationshipsHasPropertyValueRule,
-                                  retrieveWithLabelRule,
+                relationshipsWithLabelRule,
                                   retrieveExcludeNodeRule,
                 relationshipsLimitSizeRule);
 
@@ -77,7 +77,7 @@ public class RelationshipsRetriever_UT {
 
         inOrder.verify(retrieveForDirectionRule).apply(sourceNode, options);
         inOrder.verify(relationshipsHasPropertyValueRule).apply(relationships, options);
-        inOrder.verify(retrieveWithLabelRule).apply(relationships, sourceNode, options);
+        inOrder.verify(relationshipsWithLabelRule).apply(relationships, sourceNode, options);
         inOrder.verify(retrieveExcludeNodeRule).apply(relationships, excludeNode);
         inOrder.verify(relationshipsLimitSizeRule).apply(relationships, options);
     }

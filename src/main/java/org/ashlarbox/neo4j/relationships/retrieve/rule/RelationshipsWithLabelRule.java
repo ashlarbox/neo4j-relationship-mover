@@ -11,7 +11,7 @@ import static org.ashlarbox.neo4j.constants.OptionConstants.WITH_LABEL;
 import static org.ashlarbox.neo4j.option.ValidateAndRetrieveOption.validateAndRetrieve;
 import static org.ashlarbox.neo4j.relationship.predicate.WithLabelPredicate.linkedWithLabel;
 
-public class RetrieveWithLabelRule {
+public class RelationshipsWithLabelRule {
 
     public FluentIterable<Relationship> apply(FluentIterable<Relationship> iterable, Node sourceNode, HashMap<String, Object> options) {
         Label label = (Label) validateAndRetrieve(options, WITH_LABEL, Label.class);
