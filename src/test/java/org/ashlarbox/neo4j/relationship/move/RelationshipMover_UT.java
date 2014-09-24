@@ -46,32 +46,30 @@ public class RelationshipMover_UT {
     private Relationship oldRelationship;
 
     @Mock private HashMap<String, Object> options;
+    private Transaction tx;
 
     @Before
     public void prepareTestDatabase()
     {
         graphDb = new TestGraphDatabaseFactory().newImpermanentDatabase();
 
-        Transaction tx = graphDb.beginTx();
+        tx = graphDb.beginTx();
         fromNode = graphDb.createNode(label("FROM"));
         toNode = graphDb.createNode(label("TO"));
         otherNode = graphDb.createNode(label("OTHER"));
-        tx.success();
     }
 
     @After
     public void destroyTestDatabase()
     {
-        graphDb.shutdown();
+        tx.close();
     }
 
     @Test
     public void moverShouldCopyOutboundRelationshipFromOneNodeToAnother() {
         oldRelationship = fromNode.createRelationshipTo(otherNode, TEST);
 
-        Transaction tx = graphDb.beginTx();
         relationshipMover.move(fromNode, toNode, oldRelationship, options);
-        tx.success();
 
         Relationship newRelationship = toNode.getSingleRelationship(TEST, Direction.OUTGOING);
 
@@ -83,9 +81,7 @@ public class RelationshipMover_UT {
     public void moverShouldCopyInboundRelationshipFromOneNodeToAnother() {
         oldRelationship = otherNode.createRelationshipTo(fromNode, TEST);
 
-        Transaction tx = graphDb.beginTx();
         relationshipMover.move(fromNode, toNode, oldRelationship, options);
-        tx.success();
 
         Relationship newRelationship = toNode.getSingleRelationship(TEST, Direction.INCOMING);
 
@@ -97,9 +93,7 @@ public class RelationshipMover_UT {
     public void moverShouldRunPropertyFunctions() {
         oldRelationship = fromNode.createRelationshipTo(otherNode, TEST);
 
-        Transaction tx = graphDb.beginTx();
         relationshipMover.move(fromNode, toNode, oldRelationship, options);
-        tx.success();
 
         Relationship newRelationship = toNode.getSingleRelationship(TEST, Direction.OUTGOING);
 

@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 
@@ -25,6 +26,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RelationshipsMoveController_UT {
+
+    @Mock
+    private GraphDatabaseService graphDatabaseService;
 
     @Mock
     private RelationshipsMover relationshipsMover;
@@ -48,7 +52,7 @@ public class RelationshipsMoveController_UT {
             relationships.add(mock(Relationship.class));
         }
 
-        when(relationshipsRetriever.retrieve(fromNode, toNode, options)).thenReturn(relationships);
+        when(relationshipsRetriever.retrieve(graphDatabaseService, fromNode, toNode, options)).thenReturn(relationships);
     }
 
     @Test
@@ -57,7 +61,7 @@ public class RelationshipsMoveController_UT {
 
         relationshipsMoveController.move(fromNode, toNode, options);
 
-        verify(relationshipsMover).move(fromNode, toNode, relationships, options);
+        verify(relationshipsMover).move(graphDatabaseService, fromNode, toNode, relationships, options);
         verifyNoMoreInteractions(relationshipsMover);
     }
 
@@ -72,7 +76,7 @@ public class RelationshipsMoveController_UT {
 
         Iterable<List<Relationship>> partitions = partition(relationships, commitSize);
         for (List<Relationship> partition : partitions) {
-            verify(relationshipsMover).move(fromNode, toNode, partition, options);
+            verify(relationshipsMover).move(graphDatabaseService, fromNode, toNode, partition, options);
         }
         verifyNoMoreInteractions(relationshipsMover);
     }

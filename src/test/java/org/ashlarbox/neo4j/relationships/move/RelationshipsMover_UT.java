@@ -62,7 +62,7 @@ public class RelationshipsMover_UT {
 
     @Test
     public void successfulCallMovesEachRelationship() {
-        relationshipsMover.move(fromNode, toNode, relationships, options);
+        relationshipsMover.move(graphDatabaseService, fromNode, toNode, relationships, options);
 
         for (Relationship relationship : relationships) {
             verify(relationshipMover).move(fromNode, toNode, relationship, options);
@@ -72,7 +72,7 @@ public class RelationshipsMover_UT {
 
     @Test
     public void successfulCallCompletesTransaction() {
-        relationshipsMover.move(fromNode, toNode, relationships, options);
+        relationshipsMover.move(graphDatabaseService, fromNode, toNode, relationships, options);
 
         verify(tx).success();
         verify(tx).close();
@@ -90,7 +90,7 @@ public class RelationshipsMover_UT {
 
         doThrow(thrownException).when(relationshipMover).move(fromNode, toNode, relationships.get(0), options);
 
-        relationshipsMover.move(fromNode, toNode, relationships, options);
+        relationshipsMover.move(graphDatabaseService, fromNode, toNode, relationships, options);
 
         verify(tx).failure();
         verify(tx).close();

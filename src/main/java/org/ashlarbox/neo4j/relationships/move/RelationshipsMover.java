@@ -11,10 +11,9 @@ import java.util.List;
 
 class RelationshipsMover {
 
-    private GraphDatabaseService graphDatabaseService;
     private RelationshipMover relationshipMover = new RelationshipMover();
 
-    void move(Node fromNode, Node toNode, List<Relationship> relationships, HashMap<String, Object> options) {
+    void move(GraphDatabaseService graphDatabaseService, Node fromNode, Node toNode, List<Relationship> relationships, HashMap<String, Object> options) {
         Transaction tx = graphDatabaseService.beginTx();
 
         try {

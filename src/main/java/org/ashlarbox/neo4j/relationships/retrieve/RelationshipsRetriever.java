@@ -6,8 +6,10 @@ import org.ashlarbox.neo4j.relationships.retrieve.rule.RelationshipsForDirection
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RelationshipsHasPropertyValueRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RelationshipsLimitSizeRule;
 import org.ashlarbox.neo4j.relationships.retrieve.rule.RelationshipsWithLabelRule;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.Transaction;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,13 +24,19 @@ public class RelationshipsRetriever {
     private RelationshipsLimitSizeRule relationshipsLimitSizeRule = new RelationshipsLimitSizeRule();
     private RelationshipsWithLabelRule relationshipsWithLabelRule = new RelationshipsWithLabelRule();
 
-    public List<Relationship> retrieve(Node sourceNode, Node destinationNode, HashMap<String, Object> options) {
-        FluentIterable<Relationship> relationships = relationshipsForDirectionRule.apply(sourceNode, options);
-        relationships = relationshipsHasPropertyValueRule.apply(relationships, options);
-        relationships = relationshipsWithLabelRule.apply(relationships, sourceNode, options);
-        relationships = relationshipsExcludeWithNodesRule.apply(relationships, sourceNode, newArrayList(sourceNode, destinationNode));
-        relationships = relationshipsLimitSizeRule.apply(relationships, options);
-        return relationships.toList();
+    public List<Relationship> retrieve(GraphDatabaseService graphDatabaseService, Node sourceNode, Node destinationNode, HashMap<String, Object> options) {
+        Transaction tx = graphDatabaseService.beginTx();
+        try {
+            FluentIterable<Relationship> relationships = relationshipsForDirectionRule.apply(sourceNode, options);
+            relationships = relationshipsHasPropertyValueRule.apply(relationships, options);
+            relationships = relationshipsWithLabelRule.apply(relationships, sourceNode, options);
+            relationships = relationshipsExcludeWithNodesRule.apply(relationships, sourceNode, newArrayList(sourceNode, destinationNode));
+            relationships = relationshipsLimitSizeRule.apply(relationships, options);
+
+            return relationships.toList();
+        } finally {
+            tx.close();
+        }
     }
 
 }

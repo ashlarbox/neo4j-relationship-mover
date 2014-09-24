@@ -14,8 +14,10 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.Transaction;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +33,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RelationshipsRetriever_UT {
+
+    @Mock
+    private GraphDatabaseService graphDatabaseService;
 
     @Mock
     private RelationshipsExcludeWithNodesRule relationshipsExcludeWithNodesRule;
@@ -53,6 +58,7 @@ public class RelationshipsRetriever_UT {
     @Mock private Node sourceNode;
     @Mock private Node destinationNode;
     @Mock private HashMap<String, Object> options;
+    @Mock private Transaction tx;
 
     private final ImmutableList<Relationship> expectedList = ImmutableList.copyOf(asList(mock(Relationship.class), mock(Relationship.class)));
     private final FluentIterable<Relationship> relationships = from(expectedList);
@@ -64,6 +70,7 @@ public class RelationshipsRetriever_UT {
         when(relationshipsWithLabelRule.apply(relationships, sourceNode, options)).thenReturn(relationships);
         when(relationshipsExcludeWithNodesRule.apply(relationships, sourceNode, newArrayList(sourceNode, destinationNode))).thenReturn(relationships);
         when(relationshipsLimitSizeRule.apply(relationships, options)).thenReturn(relationships);
+        when(graphDatabaseService.beginTx()).thenReturn(tx);
     }
 
     @Test
@@ -74,7 +81,7 @@ public class RelationshipsRetriever_UT {
                 relationshipsExcludeWithNodesRule,
                 relationshipsLimitSizeRule);
 
-        relationshipsRetriever.retrieve(sourceNode, destinationNode, options);
+        relationshipsRetriever.retrieve(graphDatabaseService, sourceNode, destinationNode, options);
 
         inOrder.verify(relationshipsForDirectionRule).apply(sourceNode, options);
         inOrder.verify(relationshipsHasPropertyValueRule).apply(relationships, options);
@@ -85,7 +92,7 @@ public class RelationshipsRetriever_UT {
 
     @Test
     public void retrieveReturnsExpectedList() {
-        List<Relationship> returnedList = relationshipsRetriever.retrieve(sourceNode, destinationNode, options);
+        List<Relationship> returnedList = relationshipsRetriever.retrieve(graphDatabaseService, sourceNode, destinationNode, options);
 
         assertThat(returnedList, is((List<Relationship>) expectedList));
     }
