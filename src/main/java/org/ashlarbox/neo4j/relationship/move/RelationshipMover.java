@@ -27,10 +27,10 @@ public class RelationshipMover {
         relationshipPropertyCopier.copy(oldRelationship, newRelationship, options);
         relationshipPropertyAdder.add(newRelationship, options);
 
-        System.out.println(format("Created new relationship from %s to %s. Type is %s",
-                newFromNode, newToNode, newRelationship.getType().name()));
-        System.out.println(format("Deleted old relationship from %s to %s. Type was %s",
-                oldRelationship.getStartNode(), oldRelationship.getEndNode(), oldRelationship.getType().name()));
+        System.out.println(format("Created new relationship [%d] (%s)-[:%s]->(%s)", newRelationship.getId(),
+                newFromNode, newRelationship.getType().name(), newToNode));
+        System.out.println(format("Deleted old relationship [%d] (%s)-[:%s]->(%s)", oldRelationship.getId(),
+                oldRelationship.getStartNode(), oldRelationship.getType().name(), oldRelationship.getEndNode()));
 
         oldRelationship.delete();
     }
